@@ -47,6 +47,10 @@ FZF_LAYOUT="--style=full:sharp"
 export FZF_DEFAULT_OPTS="${FZF_COLORS} ${FZF_LAYOUT}"
 ```
 
+![screenshot1](../../screenshots/apt-ui/1.png)
+![screenshot2](../../screenshots/apt-ui/2.png)
+![screenshot3](../../screenshots/apt-ui/3.png)
+![screenshot4](../../screenshots/apt-ui/4.png)
 
 ## debdown
 
