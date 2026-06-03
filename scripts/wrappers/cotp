@@ -1,0 +1,20 @@
+#!/bin/sh
+
+prog=/usr/bin/cotp
+
+#config file
+CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/cotp/configrc"
+
+if [ -r "$CONFIG" ]; then
+    . "$CONFIG"
+fi
+
+DB_PATH="${XDG_DATA_HOME:-$HOME/.local/share}/cotp"
+
+export COTP_DB_PATH="$DB_PATH/db.cotp"
+
+get_password_from_keyring() {
+    secret-tool lookup application authenticator
+}
+
+get_password_from_keyring | $prog --password-stdin "$@"
