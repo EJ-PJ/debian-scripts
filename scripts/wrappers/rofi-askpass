@@ -6,9 +6,17 @@ def_prompt="password"
 
 PROMPT="${1:-$def_prompt}"
 
-rofi -dmenu \
-     -password \
-     -no-fixed-num-lines \
-     -lines 0 \
-     -theme "$CONFIG" \
-     -theme-str "textbox-prompt-colon { str: \"$PROMPT\"; }"
+if [ -r "$CONFIG" ]; then
+    exec rofi -dmenu \
+         -password \
+         -no-fixed-num-lines \
+         -lines 0 \
+         -theme "$CONFIG" \
+         -theme-str "textbox-prompt-colon { str: \"$PROMPT\"; }"
+else
+    exec rofi -dmenu \
+         -password \
+         -no-fixed-num-lines \
+         -lines 0 \
+         -p "$PROMPT"
+fi
