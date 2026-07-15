@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Authenticator
+Exec=authenticator.sh
+Icon=gnome-twofactorauth
+Comment=two factor totp authenticator
+Terminal=false
+Keywords=Verification;2FA;Authentication;OTP;TOTP;
+Categories=Security;Utility;
