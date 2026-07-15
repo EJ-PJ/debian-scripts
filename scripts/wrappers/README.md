@@ -3,7 +3,7 @@
 Tiny wrappers for some commands
 
 
-## initctl
+## servicectl
 
 A wrapper around update-rc.d(8) and service(8) to feel similar to systemctl and dispatch actions to
 multiple services, useful if you just came from regular debian or another GNU+systemd distro and got
