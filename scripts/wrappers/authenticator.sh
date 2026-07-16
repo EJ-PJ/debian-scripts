@@ -3,6 +3,8 @@
 name=Authenticator
 totp_prog=cotp-wrap
 
+term_geom="118x32"
+
 config_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/totp-authenticator"
 config_file="${config_dir}/configrc"
 
@@ -21,8 +23,11 @@ name="${name}"
 
 # program to launch
 totp_prog="$totp_prog"
+
+# terminal window geometry
+term_geom="$term_geom"
 __HEREDOC__
 fi
 
 
-x-terminal-emulator -g 118x32 -T "$name" -e "$totp_prog"
+x-terminal-emulator -g "$term_geom" -T "$name" -e "$totp_prog"
