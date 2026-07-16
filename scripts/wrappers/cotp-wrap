@@ -2,14 +2,28 @@
 
 prog=/usr/bin/cotp
 
-#config file
-CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/cotp-wrap/configrc"
+conf_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/cotp-wrap"
 
-if [ -r "$CONFIG" ]; then
-    . "$CONFIG"
-fi
-
+# default db path
 DB_PATH="${XDG_DATA_HOME:-$HOME/.local/share}/cotp"
+
+#config file
+config_file="${conf_dir}/configrc"
+
+if [ -r "$config_file" ]; then
+    . "$config_file"
+else
+    if [ ! -d "$conf_dir" ]; then
+        mkdir -p "$conf_dir"
+    fi
+    cat << __HEREDOC__ > "$config_file"
+# vim: ft=sh
+# cotp-wrap config file
+
+# default base path for db.cotp
+DB_PATH="$DB_PATH"
+__HEREDOC__
+fi
 
 export COTP_DB_PATH="$DB_PATH/db.cotp"
 
