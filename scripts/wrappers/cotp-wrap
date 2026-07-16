@@ -3,7 +3,7 @@
 prog=/usr/bin/cotp
 
 #config file
-CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/cotp/configrc"
+CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/cotp-wrap/configrc"
 
 if [ -r "$CONFIG" ]; then
     . "$CONFIG"

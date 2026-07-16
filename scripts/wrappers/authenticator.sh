@@ -1,7 +1,7 @@
 #!/bin/sh
 
 name=Authenticator
-totp_prog=cotp
+totp_prog=cotp-wrap
 
 config_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/totp-authenticator"
 config_file="${config_dir}/configrc"
