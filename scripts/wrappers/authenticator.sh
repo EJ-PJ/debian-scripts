@@ -30,4 +30,4 @@ __HEREDOC__
 fi
 
 
-x-terminal-emulator -g "$term_geom" -T "$name" -e "$totp_prog"
+exec x-terminal-emulator -g "$term_geom" -T "$name" -e "$totp_prog"
