@@ -30,3 +30,12 @@ have something in the expected location then link the script to `/usr/bin/ssh-as
 `SUDO_ASKPASS=/usr/bin/ssh-askpass` in your profile.
 Configuration is a regular rofi config.rasi file located at:
 `${XDG_CONFIG_HOME:-$HOME/.config}/rofi-askpass/config.rasi`
+
+## authenticator.sh
+
+A shallow wrapper for a totp authentication program, a .desktop file `authenticator.desktop` is
+provided, the desktop file launchs specifically this script, the script itself is very agnostic to
+the actual totp program as it can work with either a GUI or TUI program, even custom scripts, altho
+it is geared towards working with the provided cotp-wrap script.
+Configuration is a key val file located at:
+`${XDG_CONFIG_HOME:-${HOME}/.config}/totp-authenticator/configrc`
