@@ -39,3 +39,14 @@ the actual totp program as it can work with either a GUI or TUI program, even cu
 it is geared towards working with the provided cotp-wrap script.
 Configuration is a key val file located at:
 `${XDG_CONFIG_HOME:-${HOME}/.config}/totp-authenticator/configrc`
+
+## cotp-wrap
+
+A wrapper for cotp. The cotp program is great for a TUI totp authenticator, but it has some annoying
+well not features but rather quirks of configuration and usability which may make it annoying to use
+the more irking which this wrapper addresses is the need to type in a password every time you open
+the program to get a One Time Password, fortunately cotp has the option to take a password from
+stdin, which means we can leverage the secret storage keyring (like gnome keyring) and secret-tool,
+you need secret-tool and a running secrets storage service running (kwallet, gnome-keyring).
+Configuration located at:
+"${XDG_CONFIG_HOME:-${HOME}/.config}/cotp-wrap/configrc"
