@@ -50,3 +50,20 @@ stdin, which means we can leverage the secret storage keyring (like gnome keyrin
 you need secret-tool and a running secrets storage service running (kwallet, gnome-keyring).
 Configuration located at:
 "${XDG_CONFIG_HOME:-${HOME}/.config}/cotp-wrap/configrc"
+
+To setup your password first run:
+```sh
+secret-tool store --label="authenticator password" application authenticator
+```
+enter your desired password, run cotp for the first time and enter your chosen password again, even
+if you run cotp-wrap it will require the password.
+
+To actually add an OTP code there are many ways but the one that has worked for me has been to use
+OTP QR codes, say like the ones you get from github, gitlab, microsoft, etc... altho cotp can render
+the QR code in the TUI it has no native way to import a QR code, what i use is the program zbarimg
+from the zbar-tools package to extract the otp uri, then leverage a text type tool (xdotool type in
+x11) to enter the uri in the entry dialog provided by running:
+```sh
+cotp add --otpuri --label "<my otp label>"
+```
+replace the text in between `<>` with your desired label, for example gitlab for your gitlab OTP
