@@ -67,3 +67,5 @@ x11) to enter the uri in the entry dialog provided by running:
 cotp add --otpuri --label "<my otp label>"
 ```
 replace the text in between `<>` with your desired label, for example gitlab for your gitlab OTP
+
+![screenshot1](../../screenshots/cotp-wrap/1.png)
