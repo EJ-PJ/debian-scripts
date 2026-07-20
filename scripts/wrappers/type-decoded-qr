@@ -8,6 +8,7 @@ fi
 
 qr_file="$1"
 
+decoded_qr="$(zbarimg -q "$qr_file" | cut -d':' -f2-)"
 sleep 2
-xdotool type --delay 6 "$(zbarimg -q "$qr_file" | cut -d':' -f2-)"
+xdotool type --delay 6 "$decoded_qr"
 notify-send -i nwg-clipman "clipboard selection typed"
