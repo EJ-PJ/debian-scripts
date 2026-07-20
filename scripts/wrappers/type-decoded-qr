@@ -1,15 +1,25 @@
 #!/bin/sh
 
+typing_delay=2
+
+key_delay=6
 
 if [ "$#" -eq 0 ]; then
     printf '%s\n' "no arguments provided!"
     return 1
 fi
 
+conf_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/type-decoded-qr"
+CONFIG="$conf_dir/configrc"
+
+if [ -r "$CONFIG" ]; then
+    . "$CONFIG"
+fi
+
 qr_file="$1"
 
 decoded_qr="$(zbarimg -q "$qr_file")"
 decoded_qr="${decoded_qr#*:}"
-sleep 2
-xdotool type --delay 6 "$decoded_qr"
+sleep "$typing_delay"
+xdotool type --delay "$key_delay" "$decoded_qr"
 notify-send -i nwg-clipman "clipboard selection typed"
