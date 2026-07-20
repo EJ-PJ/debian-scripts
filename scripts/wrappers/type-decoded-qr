@@ -1,5 +1,11 @@
 #!/bin/sh
 
+
+if [ "$#" -eq 0 ]; then
+    printf '%s\n' "no arguments provided!"
+    return 1
+fi
+
 qr_file="$1"
 
 sleep 2
