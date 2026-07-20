@@ -1,0 +1,7 @@
+#!/bin/sh
+
+qr_file="$1"
+
+sleep 2
+xdotool type --delay 6 "$(zbarimg -q "$qr_file" | cut -d':' -f2-)"
+notify-send -i nwg-clipman "clipboard selection typed"
