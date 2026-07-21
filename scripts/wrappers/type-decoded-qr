@@ -1,6 +1,6 @@
 #!/bin/sh
 
-typing_delay=2
+focus_delay=2
 
 key_delay=6
 
@@ -31,6 +31,6 @@ type_text () {
 
 decoded_qr="$(zbarimg -q "$qr_file")"
 decoded_qr="${decoded_qr#*:}"
-sleep "$typing_delay"
+sleep "$focus_delay"
 type_text "$decoded_qr"
 notify-send -i nwg-clipman "clipboard selection typed"
