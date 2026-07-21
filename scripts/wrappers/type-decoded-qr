@@ -9,11 +9,25 @@ if [ "$#" -eq 0 ]; then
     return 1
 fi
 
-conf_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/type-decoded-qr"
-CONFIG="$conf_dir/configrc"
+conf_dir="${XDG_config_file_HOME:-${HOME}/.config}/type-decoded-qr"
+config_file="$conf_dir/configrc"
 
-if [ -r "$CONFIG" ]; then
-    . "$CONFIG"
+if [ -r "$config_file" ]; then
+    . "$config_file"
+else
+    if [ ! -d "$conf_dir" ]; then
+        mkdir -p "$conf_dir"
+    fi
+    cat << __HEREDOC__ > "$config_file"
+# vim: ft=sh
+# type decoded qr config file
+
+# delay for focusing, this is the time in SECONDS before the decoded qr text is typed
+focus_delay=$focus_delay
+
+# delay between key presses, this value is in milliseconds
+key_delay=$key_delay
+__HEREDOC__
 fi
 
 qr_file="$1"
