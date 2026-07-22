@@ -40,6 +40,14 @@ it is geared towards working with the provided cotp-wrap script.
 Configuration is a key val file located at:
 `${XDG_CONFIG_HOME:-${HOME}/.config}/totp-authenticator/configrc`
 
+## type-decoded-qr
+A utility wrapping over zbarimg (from zbar-tools) and a text typing tool (xdotool in x11 wtype in
+wayland), you give it an image containing a qr code as argument, it decodes the qr code, waits some
+seconds (configurable amount) for you to focus on the desired window and then starts typing the
+decoded text.
+Configuration located at:
+"${XDG_config_file_HOME:-${HOME}/.config}/type-decoded-qr/configrc"
+
 ## cotp-wrap
 
 A wrapper for cotp. The cotp program is great for a TUI totp authenticator, but it has some annoying
