@@ -20,7 +20,7 @@ else
     fi
     cat << __HEREDOC__ > "$config_file"
 # vim: ft=sh
-# type decoded qr config file
+# type-decoded-qr config file
 
 # delay for focusing, this is the time in SECONDS before the decoded qr text is typed
 focus_delay=$focus_delay
@@ -29,6 +29,8 @@ focus_delay=$focus_delay
 key_delay=$key_delay
 __HEREDOC__
 fi
+
+myname="${0##*/}"
 
 qr_file="$1"
 
@@ -47,4 +49,4 @@ decoded_qr="$(zbarimg -q "$qr_file")"
 decoded_qr="${decoded_qr#*:}"
 sleep "$focus_delay"
 type_text "$decoded_qr"
-notify-send -i com.github.mubitosh.qrshare "clipboard selection typed"
+notify-send -i com.github.mubitosh.qrshare "${myname}" "decoded qr code typed"
