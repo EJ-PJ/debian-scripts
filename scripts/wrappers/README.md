@@ -68,12 +68,13 @@ if you run cotp-wrap it will require the password.
 
 To actually add an OTP code there are many ways but the one that has worked for me has been to use
 OTP QR codes, say like the ones you get from github, gitlab, microsoft, etc... altho cotp can render
-the QR code in the TUI it has no native way to import a QR code, what i use is the program zbarimg
-from the zbar-tools package to extract the otp uri, then leverage a text type tool (xdotool type in
-x11) to enter the uri in the entry dialog provided by running:
+the QR code in the TUI it has no native way to import a QR code, my recommendation is to just
+leverage the type-decoded-qr utility to enter the uri in the entry dialog provided by running:
 ```sh
 cotp add --otpuri --label "<my otp label>"
 ```
 replace the text in between `<>` with your desired label, for example gitlab for your gitlab OTP
+then just run type-decoded-qr with your qr code image as input in another terminal and just focus on
+the terminal with the entry dialog.
 
 ![screenshot1](../../screenshots/cotp-wrap/1.png)
