@@ -45,8 +45,12 @@ type_text () {
     esac
 }
 
+is_prog() {
+    command -v "$1" >/dev/null || return 1
+}
+
 decoded_qr="$(zbarimg -q "$qr_file")"
 decoded_qr="${decoded_qr#*:}"
 sleep "$focus_delay"
 type_text "$decoded_qr"
-notify-send -i com.github.mubitosh.qrshare "${myname}" "decoded qr code typed"
+is_prog notify-send && notify-send -i com.github.mubitosh.qrshare "${myname}" "decoded qr code typed"
