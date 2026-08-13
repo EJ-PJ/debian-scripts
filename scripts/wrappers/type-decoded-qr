@@ -57,6 +57,7 @@ send_notif() {
 
 decoded_qr="$(zbarimg -q "$qr_file")"
 decoded_qr="${decoded_qr#*:}"
+send_notif "image decoded, $focus_delay before typing"
 sleep "$focus_delay"
 type_text "$decoded_qr"
 send_notif "decoded qr code typed"
