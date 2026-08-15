@@ -52,6 +52,8 @@ is_prog() {
 send_notif() {
     if is_prog notify-send; then
         notify-send -i com.github.mubitosh.qrshare "${myname}" "$*"
+    else
+        printf '%[s] %s\n' "$myname" "$*"
     fi
 }
 
