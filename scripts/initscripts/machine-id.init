@@ -1,0 +1,139 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          machine-id
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Should-Start:
+# X-Start-Before:    dbus
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 6
+# Short-Description: Handle flexible machine-id modes and session cleanup
+# Description:       Controls volatile or static machine-id layout variations
+#                    and purges accumulated session bus files on shutdown.
+### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+NAME=machine-id
+DESC="Flexible machine-id and session management"
+
+# Source the standard Debian/Devuan LSB logging utility library
+. /lib/lsb/init-functions
+
+
+EtcMachineID=/etc/machine-id
+RunMachineID=/run/machine-id
+BaseDbusSessDir=".dbus/session-bus"
+
+VOLATILE_MACHINE_ID=""
+
+clean_dir() {
+    local target_dir="$1"
+    if [ -d "$target_dir" ] && [ "$(echo "$target_dir"/*)" != "$target_dir/*" ]; then
+        if [ "$DRYRUN" = "yes" ]; then
+            for item in "$target_dir"/*; do
+                log_action_msg "Dry-run: Would remove $item"
+            done
+        else
+            rm -f -- "$target_dir"/*
+        fi
+    fi
+}
+
+fallback_machine_id_gen() {
+    local machine_id_file="$1"
+    needed_chars=32
+    tr -dc 'a-f0-8' < /dev/urandom 2>/dev/null | head -c "$needed_chars" >> "$machine_id_file"
+    printf "\n" >> "$machine_id_file"
+}
+
+machine_id_gen() {
+    local target_file="$1"
+
+    if command -v dbus-uuidgen >/dev/null 2>&1; then
+        dbus-uuidgen --ensure="$target_file"
+    else
+        fallback_machine_id_gen "$target_file"
+    fi
+}
+
+do_start() {
+    if [ -n "$VOLATILE_MACHINE_ID" ] && [ "$VOLATILE_MACHINE_ID" != "no" ]; then
+        log_daemon_msg "Setting up volatile machine-id" "$NAME"
+
+        if [ ! -L "$EtcMachineID" ] || [ "$(readlink "$EtcMachineID")" != "$RunMachineID" ]; then
+            rm -f "$EtcMachineID"
+            ln -sf "$RunMachineID" "$EtcMachineID"
+        fi
+
+        if [ ! -s "$RunMachineID" ]; then
+            machine_id_gen "$RunMachineID"
+        fi
+        log_end_msg 0
+
+    else
+        log_daemon_msg "Checking persistent static machine-id" "$NAME"
+
+        # If it was a volatile symlink, safely capture its contents to disk before destroying it
+        if [ -L "$EtcMachineID" ]; then
+            if [ -s "$RunMachineID" ]; then
+                local temp_id
+                temp_id=$(cat "$RunMachineID")
+                rm -f "$EtcMachineID" "$RunMachineID"
+                printf "%s\n" "$temp_id" > "$EtcMachineID"
+            else
+                rm -f "$EtcMachineID"
+            fi
+        fi
+
+        # Generate a standard static ID ONLY if the static file is genuinely missing or empty
+        if [ ! -f "$EtcMachineID" ] || [ ! -s "$EtcMachineID" ]; then
+            rm -f "$EtcMachineID"
+            machine_id_gen "$EtcMachineID"
+        fi
+        log_end_msg 0
+    fi
+}
+
+do_stop() {
+    log_daemon_msg "Removing stale session-bus files" "$NAME"
+
+    clean_dir "/root/${BaseDbusSessDir}"
+
+    getent passwd | cut -d: -f6 | while read -r userhome; do
+        if [ -z "$userhome" ] || [ "$userhome" = "/" ]; then
+            continue
+        fi
+        clean_dir "$userhome/${BaseDbusSessDir}"
+    done
+
+    log_end_msg 0
+}
+
+case "$1" in
+    start)
+        do_start
+        ;;
+    stop)
+        do_stop
+        ;;
+    restart|force-reload)
+        do_stop
+        do_start
+        ;;
+    status)
+        if [ -L "$EtcMachineID" ]; then
+            log_success_msg "Machine-ID Mode: Volatile RAM (Value: $(cat "$EtcMachineID"))"
+            exit 0
+        elif [ -s "$EtcMachineID" ]; then
+            log_success_msg "Machine-ID Mode: Persistent Static (Value: $(cat "$EtcMachineID"))"
+            exit 0
+        else
+            log_failure_msg "Machine-ID file missing or uninitialized."
+            exit 3
+        fi
+        ;;
+    *)
+        echo "Usage: $NAME {start|stop|restart|force-reload|status}" >&2
+        exit 3
+        ;;
+esac
