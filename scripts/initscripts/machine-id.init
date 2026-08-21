@@ -95,6 +95,14 @@ do_start() {
 }
 
 do_stop() {
+    PowerState="/sys/power/state"
+    PowerPMStatus="/sys/power/pm_status"
+    if [ -f "$PowerState" ]; then
+        if [ -f "$PowerPMStatus" ] && grep -q -E "freeze|suspend|hibernate" "$PowerPMStatus" 2>/dev/null; then
+            return 0
+        fi
+    fi
+
     log_daemon_msg "Removing stale session-bus files" "$NAME"
 
     clean_dir "/root/${BaseDbusSessDir}"
