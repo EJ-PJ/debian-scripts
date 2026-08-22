@@ -19,12 +19,16 @@ DESC="Flexible machine-id and session management"
 # Source the standard Debian/Devuan LSB logging utility library
 . /lib/lsb/init-functions
 
+VOLATILE_MACHINE_ID=""
+CONFIG="/etc/default/${NAME}.rc"
+# Source configuration overrides if the file exists
+if [ -f "$CONFIG" ]; then
+    . "$CONFIG"
+fi
 
 EtcMachineID=/etc/machine-id
 RunMachineID=/run/machine-id
 BaseDbusSessDir=".dbus/session-bus"
-
-VOLATILE_MACHINE_ID=""
 
 clean_dir() {
     local target_dir="$1"
