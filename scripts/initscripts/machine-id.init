@@ -20,6 +20,7 @@ DESC="Flexible machine-id and session management"
 . /lib/lsb/init-functions
 
 VOLATILE_MACHINE_ID=""
+DRYRUN=""
 CONFIG="/etc/default/${NAME}.rc"
 # Source configuration overrides if the file exists
 if [ -f "$CONFIG" ]; then
