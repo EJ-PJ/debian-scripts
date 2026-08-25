@@ -21,6 +21,7 @@ DESC="Flexible machine-id and session management"
 
 VOLATILE_MACHINE_ID=""
 DRYRUN=""
+USE_MAC_FALLBACK=""
 CONFIG="/etc/default/${NAME}.rc"
 # Source configuration overrides if the file exists
 if [ -f "$CONFIG" ]; then
@@ -45,8 +46,32 @@ clean_dir() {
 }
 
 fallback_machine_id_gen() {
+    local mac_hex=""
+    local needed_chars=32
     local machine_id_file="$1"
-    needed_chars=32
+
+    local BaseNetDir="/sys/class/net"
+    local net_dir
+    local raw_mac
+    # Only attempt MAC acquisition if explicitly enabled by the administrator
+    if [ "$USE_MAC_FALLBACK" = "yes" ]; then
+        for net_dir in "$BaseNetDir"/*; do
+            if [ -d "$net_dir" ] && [ "${net_dir##*/}" != "lo" ] && [ -f "$net_dir/address" ]; then
+                read -r raw_mac < "$net_dir/address"
+                mac_hex=$(printf '%s' "$raw_mac" | tr -d ':' | tr '[:upper:]' '[:lower:]')
+                if [ ${#mac_hex} -eq 12 ] && [ "$mac_hex" != "000000000000" ]; then
+                    break
+                fi
+                mac_hex=""
+            fi
+        done
+    fi
+
+    # Calculate remainder space (defaults to 32 if MAC loop was bypassed or empty)
+    needed_chars=$((32 - ${#mac_hex}))
+
+    # Write out any discovered MAC slice first, then append random entropy
+    printf "%s" "$mac_hex" > "$machine_id_file"
     tr -dc 'a-f0-8' < /dev/urandom 2>/dev/null | head -c "$needed_chars" >> "$machine_id_file"
     printf "\n" >> "$machine_id_file"
 }
