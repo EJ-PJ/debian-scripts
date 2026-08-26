@@ -1,0 +1,14 @@
+# Configuration for the machine-id initscript
+# Location: /etc/default/machine-id.rc
+
+# Set to "yes" to force a fresh, unique machine-id in volatile RAM on every boot.
+# If unset, empty, or set to "no", the system will use a persistent static machine-id.
+VOLATILE_MACHINE_ID="no"
+
+# Set to "yes" to incorporate the local network MAC address into the fallback
+# generator if dbus-uuidgen is missing. Set to "no" for pure random entropy.
+USE_MAC_FALLBACK="no"
+
+# Set to "yes" to remove stale session bus files from the ".dbus/session-bus"
+# dirs for all users.
+DRYRUN="no"
