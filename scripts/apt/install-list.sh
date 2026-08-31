@@ -11,68 +11,21 @@ accountsservice
 network-manager
 lm-sensors
 fancontrol
-acpi
-acpitool
-acpid
-acpi-call-dkms
+poppler-utils 
+atool
 pipewire
 pipewire-pulse
 pipewire-jack
 pipewire-alsa
 pipewire-audio
 wireplumber
-poppler-utils
-atool
-xorg
-xserver-xorg-video-amdgpu
-xserver-xorg-video-ati
-xserver-xorg-video-radeon
-xserver-xorg-input-libinput
-xserver-xorg-input-wacom
-linux-image-amd64
-linux-headers-amd64
-"
-
-graphics_drivers="
-firmware-linux
-firmware-linux-nonfree
-firmware-amd-graphics
-firmware-misc-nonfree
-libglx-mesa0
-libegl-mesa0
-libgl1-mesa-dri
-libdrm-radeon1
-libdrm-amdgpu1
-libdrm2
-libdrm-amdgpu1
-libdrm-common
-libdrm2
-libegl-mesa0
-libegl1-mesa
-libgbm1
-libgl1-mesa-dri
-libglapi-mesa
-libglx-mesa0
-libvulkan1
-libx11-xcb1
-libxatracker2
-mesa-vulkan-drivers
-mesa-vdpau-drivers
-mesa-va-drivers
-mesa-utils
-"
-
-devuan_base="
-elogind
-eudev
-seatd
-lsb-base
 "
 
 other="
 upower
 pkexec
 btrfs-progs
+redshift
 "
 
 flatpak="
@@ -82,7 +35,7 @@ flatpak
 vifm="
 trash-cli
 dosfstools
-ueberzug
+pkexec
 vifm
 "
 
@@ -94,6 +47,8 @@ zsh-syntax-highlighting
 "
 
 compression="
+tar
+zip
 zstd
 archivemount
 7zip
@@ -102,6 +57,7 @@ bzip2
 rar
 unar
 unrar
+unzip
 "
 
 downloading="
@@ -110,89 +66,60 @@ aria2
 wget
 megatools
 yt-dlp
-gallery-dl
 "
 
 min_setup="
-gtk3-nocsd
-gtk2-engines-murrine
-reportbug-gtk
 yad
-qt5ct
-qt5-style-kvantum
 gparted
 arandr
+alacritty
 brightnessctl
-libnotify-bin
-inotify-tools
 fonts-ibm-plex
 fonts-noto
 fonts-noto-color-emoji
 papirus-icon-theme
 mpv
-mpv-mpris
-playerctl
-nsxiv
+vlc
 picom
 rofi
-policykit-1-gnome
-gnome-keyring
 pulseaudio-utils
-awesome
-awesome-extra
 copyq
 copyq-plugins
 flameshot
 xinput
 xclip
-xcape
-xterm
-xsettingsd
-xsecurelock
-xss-lock
-xsct
 python3-dbus
 zathura
 zathura-pdf-poppler
 network-manager-gnome
+pavucontrol
 "
 
 console_prod="
 python3-pip
 python3-venv
 python3-build
+pipx
 build-essential
 netcat-openbsd
 inxi
 ffmpeg
-neofetch
-neovim
+fastfetch
 mediainfo
 python3-pynvim
 calcurse
 w3m
 shellcheck
-tmux
 git
 python3-libtmux
 btop
 fzf
 imagemagick
-highlight
 psmisc
 jq
 ncdu
-"
-
-printing="
-cups
-hplip
-hplip-gui
-simple-scan
-printer-driver-hpcups
-printer-driver-hpijs
-printer-driver-postscript-hp
-system-config-printer
+lua5.1
+taskwarrior
 "
 
 # return type: string
@@ -222,11 +149,8 @@ show_help () {
     printf '\t\t%-18s\t%-18s\n' "\$min_setup" "min-setup"
     printf '\t\t%-18s\t%-18s\n' "\$downloading" "downloading"
     printf '\t\t%-18s\t%-18s\n' "\$vifm" "vifm"
-    printf '\t\t%-18s\t%-18s\n' "\$printing" "printing"
     printf '\t\t%-18s\t%-18s\n' "\$other" "other"
     printf '\t\t%-18s\t%-18s\n' "\$flatpak" "flatpak"
-    printf '\t\t%-18s\t%-18s\n' "\$graphics_drivers" "graphics-drivers"
-    printf '\t\t%-18s\t%-18s\n' "\$devuan_base" "devuan-base"
     printf '\t%s\n' "to modify the lists write a file to \$XDG_CONFIG_HOME/install-list/proglist"
     printf '\t%s\n' "and inside write the modified program lists in one of the following formats:"
     printf '\t%s\n' "to append to the default lists:"
@@ -236,8 +160,106 @@ show_help () {
     printf '\t%s\n' "besides the modifiable lists there exists some special lists that can be"
     printf '\t%s\n' "passed as arguments:"
     printf '\t\t%-18s\t%s\n' "all" "- all the lists"
-    printf '\t\t%-18s\t%s\n' "devuan" "- all lists except printing and flatpak"
-    printf '\t\t%-18s\t%s\n' "debian" "- all lists except printing, flatpak and devuan_base"
+}
+
+nerd_fonts () {
+  user=$(logname)
+
+	# Creating .local/user/share/fonts directory
+	if [ -d "/home/${user}/.local/share/fonts" ]; then
+		echo "FONTS DIRECTORY ALREADY EXISTS. IGNORING CREATION"
+	else
+		echo "FONTS DIRECTORY DOES NOT EXISISTS..."
+		echo "A /home/${user}/.local/share/fonts creation will be made..."
+		mkdir -p "/home/${user}/.local/share/fonts"
+	fi
+
+	# Creating .local/user/share/fonts/otf
+	if [ -d "/home/${user}/.local/share/fonts/otf" ]; then
+		echo "OTF DIRECTORY ALREADY EXISTS. IGNORING CREATION"
+	else
+		echo "OTF DIRECTORY DOES NOT EXISISTS..."
+		echo "A /home/${user}/.local/share/fonts/otf creation will be made..."
+		mkdir -p "/home/${user}/.local/share/fonts/otf"
+	fi
+
+	# Creating .local/user/share/fonts/ttf
+	if [ -d "/home/${user}/.local/share/fonts/ttf" ]; then
+		echo "TTF DIRECTORY ALREADY EXISTS. IGNORING CREATION"
+	else
+		echo "TTF DIRECTORY DOES NOT EXISISTS..."
+		echo "A /home/${user}/.local/share/fonts/ttf creation will be made..."
+		mkdir -p "/home/${user}/.local/share/fonts/ttf"
+	fi
+
+	# Download Mononoki Nerd Font
+	if [ -d "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont" ]; then
+		echo "Mononoki DIRECTORY ALREADY EXISTS. IGNORING CREATION \n
+				  It will be assume that this font is already install"
+		echo "SKIPING Mononoki Nerd Font installation..."
+	else
+		echo "Mononoki DIRECTORY DOES NOT EXISISTS..."
+		echo "A /home/${user}/.local/share/fonts/ttf/MononokiNerdFont creation will be made..."
+		wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Mononoki.zip"
+		mkdir -p "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont"
+		unzip "Mononoki.zip" -d "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont"
+		echo "Removing Mononoki.zip..."
+		rm -r "Mononoki.zip"
+		echo "MononokiNerdFont INSTALLATION WAS SUCCESFULL"
+	fi
+
+	# Download JetBrainsMono Font
+	if [ -d "/home/${user}/.local/share/fonts/ttf/JetBrainsMono" ]; then
+		echo "JetBrainsMono DIRECTORY ALREADY EXISTS. IGNORING CREATION \n
+				  It will be assume that this font is already install"
+		echo "SKIPING JetBrainsMono Font installation..."
+	else
+		echo "JetBrainsMono DIRECTORY DOES NOT EXISISTS..."
+		echo "A /home/${user}/.local/share/fonts/ttf/JetBrainsMono creation will be made..."
+		wget "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
+		mkdir -p " /home/${user}/.local/share/fonts/ttf/JetBrainsMono"
+		unzip "JetBrainsMono-2.304.zip" -d "/home/${user}/.local/share/fonts/ttf/JetBrainsMono"
+		echo "Removing JetBrainsMono-2.304.zip..."
+		rm -r "JetBrainsMono-2.304.zip"
+		echo "JetBrainsMono INSTALLATION WAS SUCCESFULL"
+	fi
+
+	# FiraCode Nerd Font
+	if [ -d "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont" ]; then
+		echo "FiraCode DIRECTORY ALREADY EXISTS. IGNORING CREATION \n
+				  It will be assume that this font is already install"
+		echo "SKIPING Mononoki Nerd Font installation..."
+	else
+		echo "Firacode DIRECTORY DOES NOT EXISISTS..."
+		echo "A /home/${user}/.local/share/fonts/ttf/FiraCodeNerdFont creation will be made..."
+		wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
+		mkdir -p "/home/${user}/.local/share/fonts/ttf/FiraCodeNerdFont"
+		unzip "FiraCode.zip" -d "/home/${user}/.local/share/fonts/ttf/FiraCodeNerdFont"
+		echo "Removing Mononoki.zip..."
+		rm -r "FiraCode.zip"
+		echo "MononokiNerdFont INSTALLATION WAS SUCCESFULL"
+	fi
+
+	# Executing fc-cache for install fonts
+	echo "fc-cache WILL BE EXECUTE"
+	echo "executing fc-cache..."
+	fc-cache -v
+}
+
+install_pywal16 () {
+	echo "Pywal16 it will be install..."
+	echo "EXECUTING PIPX FOR PYWAL16"
+	pipx install pywal16
+}
+
+install_nvim () {
+	echo "NEOVIM V0.11.5 will be install..."
+	echo "DOWNLOADING NEOVIM v0.11.5"
+	wget "https://github.com/neovim/neovim/releases/download/v0.11.5/nvim-linux-x86_64.tar.gz"
+	echo "EXTRACTING nvim-linux-arm64.tar.gz FILE" 
+	sudo rm -rf "/opt/nvim-linux-x86_64"
+	sudo tar -C "/opt" -xzf "nvim-linux-x86_64.tar.gz"
+	printf '\nexport PATH="$PATH:/opt/nvim-linux-x86_64/bin"\n' >> "$HOME/.zshrc"
 }
 
 configdir="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -267,6 +289,7 @@ fi
 
 
 case ${1} in
+		# Prints packages to be installed
     debug)
         echo "the following packages are to be installed:"
         echo "general:"
@@ -284,9 +307,6 @@ case ${1} in
         echo "vifm:"
         echo $vifm
         echo "devuan:"
-        echo $devuan_base
-        echo "printing and scanning support:"
-        echo $printing
         echo "others:"
         echo $other
         echo "flatpak support:"
@@ -303,15 +323,14 @@ case ${1} in
             echo "    min_setup"
             echo "    downloading"
             echo "    vifm"
-            echo "    printing"
             echo "    other"
             echo "    flatpak"
-            echo "    graphics_drivers"
-            echo "    devuan_base"
+            echo "    nerd-fonts"
+						echo "    nvim (v0.11.5)"
             exit 1
         fi
         apt_act="$1"
-        case $2 in
+  			case $2 in
             all)
                 tosintall="
                 $packages
@@ -321,13 +340,12 @@ case ${1} in
                 $min_setup
                 $downloading
                 $vifm
-                $printing
                 $other
                 $flatpak
-                $graphics_drivers
-                $devuan_base
                 "
                 apt $apt_act $tosintall
+								nerd_fonts
+								install_pywal16
             ;;
             debian|ubuntu|nodevuan)
                 tosintall="
@@ -339,30 +357,9 @@ case ${1} in
                 $downloading
                 $vifm
                 $other
-                $graphics_drivers
                 "
                 apt $apt_act $tosintall
-            ;;
-            devuan-base|devuan_base)
-                tosintall="
-                $devuan_base
-                "
-                apt $apt_act $tosintall
-            ;;
-            nodebian|devuan)
-                tosintall="
-                $packages
-                $zsh
-                $console_prod
-                $compression
-                $min_setup
-                $downloading
-                $vifm
-                $other
-                $graphics_drivers
-                $devuan_base
-                "
-                apt $apt_act $tosintall
+								nerd_fonts
             ;;
             general)
                 apt $apt_act $packages
@@ -385,17 +382,17 @@ case ${1} in
             vifm)
                 apt $apt_act $vifm
             ;;
-            printing|scanning|printer|hplip)
-                apt $apt_act $printing
-            ;;
             other)
                 apt $apt_act $other
             ;;
             flatpak)
                 apt $apt_act $flatpak
             ;;
-            drivers|graphics|graphics-drivers|graphics_drivers)
-                apt $apt_act $graphics_drivers
+            nerd-fonts)
+							nerd_fonts
+            ;;
+						nvim)
+							install_nvim
             ;;
             *)
                 echo "unknown package list $2"
