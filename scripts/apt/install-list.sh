@@ -11,7 +11,7 @@ accountsservice
 network-manager
 lm-sensors
 fancontrol
-poppler-utils 
+poppler-utils
 atool
 pipewire
 pipewire-pulse
@@ -192,74 +192,147 @@ nerd_fonts () {
 		mkdir -p "/home/${user}/.local/share/fonts/ttf"
 	fi
 
-	# Download Mononoki Nerd Font
-	if [ -d "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont" ]; then
-		echo "Mononoki DIRECTORY ALREADY EXISTS. IGNORING CREATION \n
-				  It will be assume that this font is already install"
-		echo "SKIPING Mononoki Nerd Font installation..."
-	else
-		echo "Mononoki DIRECTORY DOES NOT EXISISTS..."
-		echo "A /home/${user}/.local/share/fonts/ttf/MononokiNerdFont creation will be made..."
-		wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Mononoki.zip"
-		mkdir -p "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont"
-		unzip "Mononoki.zip" -d "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont"
-		echo "Removing Mononoki.zip..."
-		rm -r "Mononoki.zip"
-		echo "MononokiNerdFont INSTALLATION WAS SUCCESFULL"
-	fi
+    font_name=( "Mononoki" "JetBrainsMono" "FiraCode")
+    font_file_names=("MononokiNerdFont" "JetBrainsMono" "FiraCode")
+    font_url=(
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Mononoki.zip"
+        "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
+    )
 
-	# Download JetBrainsMono Font
-	if [ -d "/home/${user}/.local/share/fonts/ttf/JetBrainsMono" ]; then
-		echo "JetBrainsMono DIRECTORY ALREADY EXISTS. IGNORING CREATION \n
-				  It will be assume that this font is already install"
-		echo "SKIPING JetBrainsMono Font installation..."
-	else
-		echo "JetBrainsMono DIRECTORY DOES NOT EXISISTS..."
-		echo "A /home/${user}/.local/share/fonts/ttf/JetBrainsMono creation will be made..."
-		wget "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
-		mkdir -p " /home/${user}/.local/share/fonts/ttf/JetBrainsMono"
-		unzip "JetBrainsMono-2.304.zip" -d "/home/${user}/.local/share/fonts/ttf/JetBrainsMono"
-		echo "Removing JetBrainsMono-2.304.zip..."
-		rm -r "JetBrainsMono-2.304.zip"
-		echo "JetBrainsMono INSTALLATION WAS SUCCESFULL"
-	fi
+    # Creating Nerf Font Files
+    echo "MAKING NERD FONT FILES..."
+    for file_name in "${font_file_names[@]}"; do
 
-	# FiraCode Nerd Font
-	if [ -d "/home/${user}/.local/share/fonts/ttf/MononokiNerdFont" ]; then
-		echo "FiraCode DIRECTORY ALREADY EXISTS. IGNORING CREATION \n
-				  It will be assume that this font is already install"
-		echo "SKIPING Mononoki Nerd Font installation..."
-	else
-		echo "Firacode DIRECTORY DOES NOT EXISISTS..."
-		echo "A /home/${user}/.local/share/fonts/ttf/FiraCodeNerdFont creation will be made..."
-		wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
-		mkdir -p "/home/${user}/.local/share/fonts/ttf/FiraCodeNerdFont"
-		unzip "FiraCode.zip" -d "/home/${user}/.local/share/fonts/ttf/FiraCodeNerdFont"
-		echo "Removing Mononoki.zip..."
-		rm -r "FiraCode.zip"
-		echo "MononokiNerdFont INSTALLATION WAS SUCCESFULL"
-	fi
+        echo "CREATING $file_name FILE..."
+
+        # Probes if the file_name already exists
+        if [ -d "/home/${user}/.local/share/fonts/ttf/$file_name" ]; then
+            echo "$file_name DIRECTORY ALREADY EXISTS. IGNORING CREATION"
+            echo "It will be assumed that this font is already install"
+            echo "Skipping font installation..."
+            continue
+        fi
+
+        echo "$file_name DIRECTORY DOES NOT EXIST..."
+        echo "A /home/${user}/.local/share/fonts/ttf/$file_name creation will be created..."
+
+        if mkdir -p "/home/${user}/.local/share/fonts/ttf/$file_name"; then
+            echo "$file_name DIRECTORY CREATED SUCCESFULLY"
+        else
+            echo "ERROR WHILE TRYING TO CREATE $file_name DIRECTORY"
+            echo "STOPING PROCESS"
+            return 1
+        fi
+    done
+
+    echo "DOWNLOADING FONTS... "
+
+    for i in "${!font_name[@]}"; do
+        name="${font_name[$i]}"
+        url="${font_url[$i]}"
+        if wget "$url"; then
+            echo "$name FONT DOWNLOAD SUCCESFULL"
+        else
+            echo "ERROR: FAILED TO DOWNLOAD $name FONT"
+            return 1
+        fi
+    done
+
+    for i in "${!font_name[@]}"; do
+        url="${font_url[$i]}"
+        file_name="${font_file_names[$i]}"
+
+        zip_file="${url##*/}"
+
+        echo "EXTRACTING $zip_file..."
+
+        if unzip "zip_file" -d "/home/${user}/.local/share/fonts/ttf/$file_name"; then
+            echo "zip_file EXTRACTION WAS SUCCESFULL"
+        else
+            echo "ERROR WHILE EXTRACTING zip_file"
+            echo "STOPING PROCESS"
+            return 1
+        fi
+    done
+
+    for i in "${!font_name[@]}"; do
+        name="${font_name[$i]}"
+        file_name="${font_file_names[$i]}"
+
+        zip_file="${url##*/}"
+
+        echo "REMOVING $zip_file..."
+
+        if rm -f "$zip_file"; then
+            echo "$zip_file REMOVE WAS SUCCESFULL"
+        else
+            echo "ERROR WHILE REMOVE $zip_file"
+            echo "STOPING PROCESS"
+            return 1
+        fi
+
+        echo "$name FONT INSTALLATION WAS SUCCESFULL"
+    done
 
 	# Executing fc-cache for install fonts
 	echo "fc-cache WILL BE EXECUTE"
-	echo "executing fc-cache..."
-	fc-cache -v
+	echo "EXECUTING fc-cache..."
+	if fc-cache -v;then
+	    echo "EXECUTION fc-cache WAS SUCCESFULL"
+    else
+	    echo "ERROR while fc-cache EXECUTION"
+        return 1
+    fi
+
+    return 0
 }
 
 install_pywal16 () {
 	echo "Pywal16 it will be install..."
 	echo "EXECUTING PIPX FOR PYWAL16"
-	pipx install pywal16
+    if pipx install pywal16; then
+        echo "PYWAL16 DOWNLOAD SUCCESSFUL!"
+    then
+        echo "ERROR: FAILED TO DOWNLOAD PYWAL16"
+        return 1
+    fi
+
+    return 0
 }
 
-install_nvim () {
-	echo "NEOVIM V0.11.5 will be install..."
-	echo "DOWNLOADING NEOVIM v0.11.5"
-	wget "https://github.com/neovim/neovim/releases/download/v0.11.5/nvim-linux-x86_64.tar.gz"
-	echo "EXTRACTING nvim-linux-arm64.tar.gz FILE" 
-	sudo rm -rf "/opt/nvim-linux-x86_64"
-	sudo tar -C "/opt" -xzf "nvim-linux-x86_64.tar.gz"
-	printf '\nexport PATH="$PATH:/opt/nvim-linux-x86_64/bin"\n' >> "$HOME/.zshrc"
+install_nvim() {
+
+    echo "NEOVIM V0.11.5 WILL BE INSTALLED..."
+    echo "DOWNLOADING NEOVIM V0.11.5"
+
+    if ! wget --progress=bar:force:noscroll \
+        "https://github.com/neovim/neovim/releases/download/v0.11.5/nvim-linux-x86_64.tar.gz"
+    then
+        echo "ERROR: FAILED TO DOWNLOAD NEOVIM"
+        return 1
+    fi
+
+    echo "EXTRACTING nvim-linux-x86_64.tar.gz"
+
+    if ! sudo rm -rf "/opt/nvim-linux-x86_64"; then
+        echo "ERROR: FAILED TO REMOVE OLD NEOVIM INSTALLATION"
+        return 1
+    fi
+
+    if ! sudo tar -C "/opt" -xzf "nvim-linux-x86_64.tar.gz"; then
+        echo "ERROR: FAILED TO EXTRACT NEOVIM"
+        return 1
+    fi
+
+    if ! printf '\nexport PATH="$PATH:/opt/nvim-linux-x86_64/bin"\n' >> "$HOME/.zshrc"; then
+        echo "ERROR: FAILED TO UPDATE .zshrc"
+        return 1
+    fi
+
+    echo "NEOVIM INSTALLATION SUCCESSFUL"
+
+    return 0
 }
 
 configdir="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -326,7 +399,7 @@ case ${1} in
             echo "    other"
             echo "    flatpak"
             echo "    nerd-fonts"
-						echo "    nvim (v0.11.5)"
+			echo "    nvim (v0.11.5)"
             exit 1
         fi
         apt_act="$1"
@@ -344,8 +417,8 @@ case ${1} in
                 $flatpak
                 "
                 apt $apt_act $tosintall
-								nerd_fonts
-								install_pywal16
+			    nerd_fonts
+			    install_pywal16
             ;;
             debian|ubuntu|nodevuan)
                 tosintall="
@@ -359,7 +432,8 @@ case ${1} in
                 $other
                 "
                 apt $apt_act $tosintall
-								nerd_fonts
+				nerd_fonts
+                nvim
             ;;
             general)
                 apt $apt_act $packages
@@ -389,10 +463,10 @@ case ${1} in
                 apt $apt_act $flatpak
             ;;
             nerd-fonts)
-							nerd_fonts
+				nerd_fonts
             ;;
-						nvim)
-							install_nvim
+			nvim)
+			    install_nvim
             ;;
             *)
                 echo "unknown package list $2"
