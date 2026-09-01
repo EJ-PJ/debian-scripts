@@ -1,4 +1,4 @@
-#!/bin/sh
+#!usr/bin/bash
 
 #################################################################################
 #### a configurable script to quickly install or reinstall lists of packages ####
@@ -26,6 +26,7 @@ upower
 pkexec
 btrfs-progs
 redshift
+nemo
 "
 
 flatpak="
@@ -159,15 +160,7 @@ show_help () {
 }
 
 nerd_fonts () {
-    user=$(logname)
-
-    font_name=("Mononoki" "JetBrainsMono" "FiraCode")
-    font_file_names=("MononokiNerdFont" "JetBrainsMono" "FiraCode")
-    font_url=(
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Mononoki.zip"
-        "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
-    )
+  user=$(logname)
 
 	# Creating .local/user/share/fonts directory
 	if [ -d "/home/${user}/.local/share/fonts" ]; then
@@ -196,6 +189,13 @@ nerd_fonts () {
 		mkdir -p "/home/${user}/.local/share/fonts/ttf"
 	fi
 
+    font_name=( "Mononoki" "JetBrainsMono" "FiraCode")
+    font_file_names=("MononokiNerdFont" "JetBrainsMono" "FiraCode")
+    font_url=(
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Mononoki.zip"
+        "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
+    )
 
     # Creating Nerf Font Files
     echo "MAKING NERD FONT FILES..."
@@ -256,7 +256,6 @@ nerd_fonts () {
     for i in "${!font_name[@]}"; do
         name="${font_name[$i]}"
         file_name="${font_file_names[$i]}"
-        url="${font_url[$i]}"
 
         zip_file="${url##*/}"
 
@@ -320,12 +319,12 @@ install_nvim() {
 
     if ! sudo tar -C "/opt" -xzf "nvim-linux-x86_64.tar.gz"; then
         echo "ERROR: FAILED TO EXTRACT NEOVIM"
-        return 1
+        exit 1
     fi
 
     if ! printf '\nexport PATH="$PATH:/opt/nvim-linux-x86_64/bin"\n' >> "$HOME/.zshrc"; then
         echo "ERROR: FAILED TO UPDATE .zshrc"
-        return 1
+        exit 1
     fi
 
     echo "NEOVIM INSTALLATION SUCCESSFUL"
@@ -415,9 +414,9 @@ case ${1} in
                 $flatpak
                 "
                 apt $apt_act $tosintall
-			    nerd_fonts
+			   # nerd_fonts
 			    install_pywal16
-                install_nvim
+                nvim
             ;;
             debian|ubuntu|nodevuan)
                 tosintall="
