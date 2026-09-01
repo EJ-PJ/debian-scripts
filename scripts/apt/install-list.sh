@@ -54,9 +54,6 @@ archivemount
 7zip
 p7zip-full
 bzip2
-rar
-unar
-unrar
 unzip
 "
 
@@ -74,7 +71,6 @@ gparted
 arandr
 alacritty
 brightnessctl
-fonts-ibm-plex
 fonts-noto
 fonts-noto-color-emoji
 papirus-icon-theme
@@ -163,7 +159,15 @@ show_help () {
 }
 
 nerd_fonts () {
-  user=$(logname)
+    user=$(logname)
+
+    font_name=("Mononoki" "JetBrainsMono" "FiraCode")
+    font_file_names=("MononokiNerdFont" "JetBrainsMono" "FiraCode")
+    font_url=(
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Mononoki.zip"
+        "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
+    )
 
 	# Creating .local/user/share/fonts directory
 	if [ -d "/home/${user}/.local/share/fonts" ]; then
@@ -192,13 +196,6 @@ nerd_fonts () {
 		mkdir -p "/home/${user}/.local/share/fonts/ttf"
 	fi
 
-    font_name=( "Mononoki" "JetBrainsMono" "FiraCode")
-    font_file_names=("MononokiNerdFont" "JetBrainsMono" "FiraCode")
-    font_url=(
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Mononoki.zip"
-        "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
-    )
 
     # Creating Nerf Font Files
     echo "MAKING NERD FONT FILES..."
@@ -259,6 +256,7 @@ nerd_fonts () {
     for i in "${!font_name[@]}"; do
         name="${font_name[$i]}"
         file_name="${font_file_names[$i]}"
+        url="${font_url[$i]}"
 
         zip_file="${url##*/}"
 
@@ -419,7 +417,7 @@ case ${1} in
                 apt $apt_act $tosintall
 			    nerd_fonts
 			    install_pywal16
-                nvim
+                install_nvim
             ;;
             debian|ubuntu|nodevuan)
                 tosintall="
@@ -435,7 +433,7 @@ case ${1} in
                 apt $apt_act $tosintall
 				nerd_fonts
 			    install_pywal16
-                nvim
+                install_nvim
             ;;
             general)
                 apt $apt_act $packages
