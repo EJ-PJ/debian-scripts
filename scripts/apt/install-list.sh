@@ -419,6 +419,7 @@ case ${1} in
                 apt $apt_act $tosintall
 			    nerd_fonts
 			    install_pywal16
+                nvim
             ;;
             debian|ubuntu|nodevuan)
                 tosintall="
@@ -433,6 +434,7 @@ case ${1} in
                 "
                 apt $apt_act $tosintall
 				nerd_fonts
+			    install_pywal16
                 nvim
             ;;
             general)
