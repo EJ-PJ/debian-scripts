@@ -247,10 +247,10 @@ nerd_fonts () {
 
         echo "EXTRACTING $zip_file..."
 
-        if unzip "zip_file" -d "/home/${user}/.local/share/fonts/ttf/$file_name"; then
+        if unzip "$zip_file" -d "/home/${user}/.local/share/fonts/ttf/$file_name"; then
             echo "zip_file EXTRACTION WAS SUCCESFULL"
         else
-            echo "ERROR WHILE EXTRACTING zip_file"
+            echo "ERROR WHILE EXTRACTING $zip_file"
             echo "STOPING PROCESS"
             return 1
         fi
@@ -293,7 +293,7 @@ install_pywal16 () {
 	echo "EXECUTING PIPX FOR PYWAL16"
     if pipx install pywal16; then
         echo "PYWAL16 DOWNLOAD SUCCESSFUL!"
-    then
+    else
         echo "ERROR: FAILED TO DOWNLOAD PYWAL16"
         return 1
     fi
