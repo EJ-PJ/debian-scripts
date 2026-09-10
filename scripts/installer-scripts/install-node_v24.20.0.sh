@@ -46,7 +46,8 @@ fi
 
 echo "Adding Path for Node..."
 # Nodejs
-echo "VERSION=24.20.0" >> "$HOME/.zshrc"
+echo
+echo "VERSION=v24.20.0" >> "$HOME/.zshrc"
 echo "DISTRO=linux-x64" >> "$HOME/.zshrc"
-echo 
+echo
 echo "export PATH=/usr/local/lib/nodejs/node-\$VERSION-\$DISTRO/bin:\$PATH" >> "$HOME/.zshrc"

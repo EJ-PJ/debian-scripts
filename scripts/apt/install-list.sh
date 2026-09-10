@@ -103,7 +103,6 @@ inxi
 ffmpeg
 fastfetch
 mediainfo
-python3-pynvim
 calcurse
 w3m
 shellcheck
@@ -197,7 +196,7 @@ nerd_fonts () {
         "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.zip"
     )
 
-    # Creating Nerf Font Files
+    # Creating Nerd Font Files
     echo "MAKING NERD FONT FILES..."
     for file_name in "${font_file_names[@]}"; do
 
@@ -225,6 +224,7 @@ nerd_fonts () {
 
     echo "DOWNLOADING FONTS... "
 
+    # Nerd Fonts Dowload
     for i in "${!font_name[@]}"; do
         name="${font_name[$i]}"
         url="${font_url[$i]}"
@@ -236,6 +236,8 @@ nerd_fonts () {
         fi
     done
 
+    echo "EXTRACTING FONTS... "
+    # Fonts Extraction
     for i in "${!font_name[@]}"; do
         url="${font_url[$i]}"
         file_name="${font_file_names[$i]}"
@@ -253,7 +255,10 @@ nerd_fonts () {
         fi
     done
 
+
+    echo "REMOVING TAR FONTS FILES... "
     for i in "${!font_name[@]}"; do
+        url="${font_url[$i]}"
         name="${font_name[$i]}"
         file_name="${font_file_names[$i]}"
 
@@ -414,9 +419,9 @@ case ${1} in
                 $flatpak
                 "
                 apt $apt_act $tosintall
-			   # nerd_fonts
-			    install_pywal16
-                nvim
+		#nerd_fonts
+		install_pywal16
+		install_nvim
             ;;
             debian|ubuntu|nodevuan)
                 tosintall="
@@ -430,8 +435,8 @@ case ${1} in
                 $other
                 "
                 apt $apt_act $tosintall
-				nerd_fonts
-			    install_pywal16
+		nerd_fonts
+		install_pywal16
                 install_nvim
             ;;
             general)
@@ -462,10 +467,10 @@ case ${1} in
                 apt $apt_act $flatpak
             ;;
             nerd-fonts)
-				nerd_fonts
+	    	nerd_fonts
             ;;
-			nvim)
-			    install_nvim
+	    nvim)
+	    	install_nvim
             ;;
             *)
                 echo "unknown package list $2"
