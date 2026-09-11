@@ -21,9 +21,9 @@ fi
 
 echo "Downloading NodeJS v24.20.0"
 if wget "$url_node"; then
-    echo "node-24.20.0 download was succesfull"
+    echo "node-v24.20.0 download was succesfull"
 else
-    echo "node-24.20.0 download stop since an error accour"
+    echo "node-v24.20.0 download stop since an error accour"
     return 1
 fi
 
@@ -44,10 +44,17 @@ else
     echo "ERROR: Failed to move NodeJS directory."
 fi
 
+echo "Removing node-v24.20.0-linux-x64.tar.xz file"
+if sudo rm "node-v24.20.0-linux-x64.tar.xz"; then
+    echo "node-v24.20.0-linux-x64.tar.xz file was removed succesfully"
+else
+    echo "ERROR: Failed to remove node-v24.20.0-linux-x64.tar.xz file"
+fi
+
 echo "Adding Path for Node..."
 # Nodejs
-echo
+echo "" >> "$HOME/.zshrc "
 echo "VERSION=v24.20.0" >> "$HOME/.zshrc"
 echo "DISTRO=linux-x64" >> "$HOME/.zshrc"
-echo
+echo "" >> "$HOME/.zshrc "
 echo "export PATH=/usr/local/lib/nodejs/node-\$VERSION-\$DISTRO/bin:\$PATH" >> "$HOME/.zshrc"
